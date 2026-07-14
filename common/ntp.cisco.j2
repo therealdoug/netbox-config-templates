@@ -1,7 +1,7 @@
-{%- for ntp in ntp4_local_servers %}
+{% for ntp in ntp4_local_servers %}
 ip ntp server {{ ntp }}
-{%- endfor %}
-{%- for ntp in ntp6_local_servers %}
+{% endfor %}
+{% for ntp in ntp6_local_servers %}
 ip ntp server {{ ntp }}
-{%- endfor %}
+{% endfor %}
 !

@@ -22,25 +22,10 @@ ip bgp-community new-format
 !# Set local admin
 {{ local_cisco_admin }}
 
-{% for interface in device.interfaces.all() %} 
-interface {{ interface.name }}
- no switchport
-{%-  if interface.description | length > 0 %} 
- description {{ interface.description }}
-{%- endif %}
-{%-  if interface.enabled == true %}
- no shutdown
-{%- elif interface.enabled == false %}
- shutdown
-{%-  endif %}
-{%-  if interface.mgmt_only == true %}
- ip address dhcp
- duplex full
- ipv6 address autoconfig default
-{%-  endif %}
-!
-{%- endfor %}
-
+!# Configure Interfaces
+{% if device.role == 'Lab Core Router' %}
+{% include common/bgp-core-interface.cisco.j2 %}
+{% endif %}
 
 !# Set Line Console Settings
 {% include 'common/line.cisco.j2' %}
