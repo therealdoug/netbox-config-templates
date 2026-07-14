@@ -1,27 +1,35 @@
-{# Configure BGP Core Interfaces#}
 {% for interface in device.interfaces.all() %}
 interface {{ interface.name }}
-{# Set Interface Description #}
-{% if interface.description | length > 0 %}
- description {{ interface.description }}
-{% endif %}
-{% if interface.enabled == true %}
- no shutdown
-{% elif interface.enabled == false %}
- shutdown
-{% endif %}
-{% if interface.mgmt_only == true %}
- ip address dhcp
- duplex full
- ipv6 address autoconfig default
-{% else %}
- {% if interface.ipv4_address %}
- ip address {{ interface.ipv4_address }} {{ interface.ipv4_mask }}
- {% endif %}
- {% if interface.ipv6_address %}
- ipv6 address {{ interface.ipv6_address }}/{{ interface.ipv6_mask }}
- {% endif %}
-{% endif %}
-
+  {# 1. Set Description #}
+  {% if interface.description %}
+  description {{ interface.description }}
+  {% else %}
+  description Connected to NetBox {{ interface.name }}
+  {% endif %}
+  {#- 2. Handle Shutdown State #}
+  {% if not interface.enabled %}
+  shutdown
+  {% else %}
+  no shutdown
+  {#- 3. Management Interface Configuration #}
+  {% if interface.mgmt_only %}
+  ip address dhcp
+  ipv6 address autoconfig default
+  {#- 4. Non-Management Interface Configuration #}
+  {% else %}
+    {# IPv4 Loop #}
+    {% for ip in interface.ip_addresses.all() %}
+      {% if ip.address.version == 4 %}
+  ip address {{ ip.address.ip }} {{ ip.address.netmask }}{% if not loop.first %} secondary{% endif %}
+      {% endif %}
+    {% endfor %}
+    {# IPv6 Loop #}
+    {% for ip in interface.ip_addresses.all() %}
+      {% if ip.address.version == 6 %}
+  ipv6 address {{ ip.address }}
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+  {% endif %}
 !
 {% endfor %}

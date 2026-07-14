@@ -27,8 +27,6 @@ ip bgp-community new-format
 
 {% if device.role | string == 'Lab Core Router' %}
 {% include 'common/bgp-core-interface.cisco.j2' %}
-{% else %}
-!# NOT TRUE?
 {% endif %}
 
 !# Set Line Console Settings
