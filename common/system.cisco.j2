@@ -25,7 +25,7 @@ ip bgp-community new-format
 !# Configure Interfaces
 {% if device.role == 'Lab Core Router' %}
 
-{% include common/bgp-core-interface.cisco.j2 %}
+{% include 'common/bgp-core-interface.cisco.j2' %}
 
 {% endif %}
 
