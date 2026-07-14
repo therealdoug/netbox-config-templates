@@ -6,16 +6,16 @@ interface {{ interface.name }}
   {% else %}
   description Connected to NetBox {{ interface.name }}
   {% endif %}
-  {#- 2. Handle Shutdown State #}
+  {# 2. Handle Shutdown State #}
   {% if not interface.enabled %}
   shutdown
   {% else %}
   no shutdown
-  {#- 3. Management Interface Configuration #}
+  {# 3. Management Interface Configuration #}
   {% if interface.mgmt_only %}
   ip address dhcp
   ipv6 address autoconfig default
-  {#- 4. Non-Management Interface Configuration #}
+  {# 4. Non-Management Interface Configuration #}
   {% else %}
     {# IPv4 Loop #}
     {% for ip in interface.ip_addresses.all() %}
