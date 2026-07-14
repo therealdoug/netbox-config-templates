@@ -23,10 +23,10 @@ ip bgp-community new-format
 {{ local_cisco_admin }}
 
 !# Configure Interfaces
+{{ device.role }}
+
 {% if device.role == 'Lab Core Router' %}
-
 {% include 'common/bgp-core-interface.cisco.j2' %}
-
 {% endif %}
 
 !# Set Line Console Settings
