@@ -1,8 +1,8 @@
 {# Configure BGP Core Interfaces#}
-{% for interface in device.interfaces.all() %} 
+{% for interface in device.interfaces.all() %}
 interface {{ interface.name }}
 {# Set Interface Description #}
-{% if interface.description | length > 0 %} 
+{% if interface.description | length > 0 %}
  description {{ interface.description }}
 {% endif %}
 {% if interface.enabled == true %}
@@ -21,6 +21,6 @@ interface {{ interface.name }}
  {% if interface.ipv6_address %}
  ipv6 address {{ interface.ipv6_address }}/{{ interface.ipv6_mask }}
  {% endif %}
-{% endif %} 
+{% endif %}
 !
 {% endfor %}
