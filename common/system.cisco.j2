@@ -1,0 +1,49 @@
+hostname {{ device.name }}
+
+!# Enable CDP
+cdp run
+
+!# Enable IPv6 Routing
+ipv6 unicast-routing
+
+!# Enable aaa new-model
+aaa new-model
+
+!# Set DNS settings
+{% include 'common/dns.cisco.j2' %}
+
+!# Disable HTTP Server
+no ip http server
+no ip http secure-server
+
+!# Enable new BGP communities
+ip bgp-community new-format
+
+!# Set local admin
+{{ local_cisco_admin }}
+
+{% for interface in device.interfaces.all() %} 
+interface {{ interface.name }}
+ no switchport
+{%-  if interface.description | length > 0 %} 
+ description {{ interface.description }}
+{%- endif %}
+{%-  if interface.enabled == true %}
+ no shutdown
+{%- elif interface.enabled == false %}
+ shutdown
+{%-  endif %}
+{%-  if interface.mgmt_only == true %}
+ ip address dhcp
+ duplex full
+ ipv6 address autoconfig default
+{%-  endif %}
+!
+{%- endfor %}
+
+
+!# Set Line Console Settings
+{% include 'common/line.cisco.j2' %}
+
+!# Set NTP Server
+{% include 'common/ntp.cisco.j2' %}

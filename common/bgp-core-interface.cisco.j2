@@ -1,0 +1,26 @@
+{# Configure BGP Core Interfaces#}
+{% for interface in device.interfaces.all() %} 
+interface {{ interface.name }}
+{# Set Interface Description #}
+{%   if interface.description | length > 0 %} 
+ description {{ interface.description }}
+{%   endif %}
+{%    if interface.enabled == true %}
+ no shutdown
+{%   elif interface.enabled == false %}
+ shutdown
+{%   endif %}
+{%   if interface.mgmt_only == true %}
+ ip address dhcp
+ duplex full
+ ipv6 address autoconfig default
+{%   else %}
+ {% if interface.ipv4_address %}
+ ip address {{ interface.ipv4_address }} {{ interface.ipv4_mask }}
+ {% endif %}
+ {% if interface.ipv6_address %}
+ ipv6 address {{ interface.ipv6_address }}/{{ interface.ipv6_mask }}
+ {% endif %}
+{%   endif %}
+!
+{% endfor %}
