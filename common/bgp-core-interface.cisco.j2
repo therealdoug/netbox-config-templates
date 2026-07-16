@@ -32,7 +32,7 @@ interface {{ interface.name }}
       {% endif %}
     {% endfor %}
   {% endif %}
-  {% if device.cf.ospf_enabled == true %}
+  {% if interface.cf.ospf_enabled == true %}
   ip ospf {{ ospf_process_id }} area {{ ospf_area_id }}
   ip ospf network {{ ospf_network_type }}
   {% endif %}
