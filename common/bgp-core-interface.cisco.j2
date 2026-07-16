@@ -36,5 +36,6 @@ interface {{ interface.name }}
   ip ospf {{ ospf_process_id }} area {{ ospf_area_id }}
   ip ospf network {{ ospf_network_type }}
   {% endif %}
+
 !
 {% endfor %}
