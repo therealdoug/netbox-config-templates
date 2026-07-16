@@ -1,5 +1,5 @@
 {
-    "ospf_process_id": 1,
     "ospf_area_id": 0,
-    "ospf_network_type": "point-to-point"
+    "ospf_network_type": "point-to-point",
+    "ospf_process_id": 100
 }

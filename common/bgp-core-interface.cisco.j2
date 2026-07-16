@@ -11,6 +11,7 @@ interface {{ interface.name }}
   shutdown
   {% else %}
   no shutdown
+  {% endif %}
   {# 3. Management Interface Configuration #}
   {% if interface.mgmt_only %}
   ip address dhcp
@@ -26,10 +27,14 @@ interface {{ interface.name }}
     {# IPv6 Loop #}
     {% for ip in interface.ip_addresses.all() %}
       {% if ip.address.version == 6 %}
+
   ipv6 address {{ ip.address }}
       {% endif %}
     {% endfor %}
   {% endif %}
+  {% if interface.ospf_enabled %}
+  ip ospf {{ ospf_process_id }} area {{ ospf_area_id }}
+  ip ospf network {{ ospf_network_type }}
   {% endif %}
 !
 {% endfor %}
