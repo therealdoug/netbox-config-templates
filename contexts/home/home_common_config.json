@@ -1,0 +1,24 @@
+{
+    "dns4_local_servers": [
+        "192.168.86.1",
+        "192.168.19.1"
+    ],
+    "dns6_local_servers": [
+        "2001:470:e1e1:86::1",
+        "2001:470:e1e1:19::1"
+    ],
+    "local_cisco_admin": "username admin privilege 15 secret 5 $1$M.G0$870E/a9d/7YrpmTwxsFLi.",
+    "local_domain": "internal",
+    "local_search_domain": [
+        "internal",
+        "lab.internal"
+    ],
+    "ntp4_local_servers": [
+        "192.168.86.1",
+        "192.168.19.1"
+    ],
+    "ntp6_local_servers": [
+        "2001:470:e1e1:86::1",
+        "2001:470:e1e1:19::1"
+    ]
+}

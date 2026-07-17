@@ -1,0 +1,7 @@
+{% set mgmt_interface = device.interfaces | selectattr('mgmt_only', 'equalto', 'true') | first %}
+
+interface {{ mgmt_interface.name }}
+  description {{ mgmt_interface.description }}
+  ip address dhcp
+  ipv6 address autoconfig default
+  no shutdown
