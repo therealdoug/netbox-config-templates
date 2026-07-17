@@ -10,7 +10,7 @@ ipv6 unicast-routing
 aaa new-model
 
 !# Set DNS settings
-{% include 'common/dns.cisco.j2' %}
+{% include 'common/cisco/dns.cisco.j2' %}
 
 !# Disable HTTP Server
 no ip http server
@@ -30,10 +30,10 @@ ip bgp-community new-format
 {% endif %}
 
 !# Set Line Console Settings
-{% include 'common/line.cisco.j2' %}
+{% include 'common/cisco/line.cisco.j2' %}
 
 !# Set NTP Server
-{% include 'common/ntp.cisco.j2' %}
+{% include 'common/cisco/ntp.cisco.j2' %}
 
 !# Enable IPv6 Routing if device has IPv6 addresses
 {% if device.ipv6_addresses | length > 0 %}
