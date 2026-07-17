@@ -12,27 +12,20 @@ interface {{ interface.name }}
   {% else %}
   no shutdown
   {% endif %}
-  {# 3. Management Interface Configuration #}
-  {% if interface.mgmt_only %}
-  ip address dhcp
-  ipv6 address autoconfig default
-  {# 4. Non-Management Interface Configuration #}
-  {% else %}
-    {# IPv4 Loop #}
-    {% for ip in interface.ip_addresses.all() %}
-      {% if ip.address.version == 4 %}
+  {# IPv4 Loop #}
+  {% for ip in interface.ip_addresses.all() %}
+    {% if ip.address.version == 4 %}
   ip address {{ ip.address.ip }} {{ ip.address.netmask }}{% if not loop.first %} secondary{% endif %}
-      {% endif %}
-    {% endfor %}
-    {# IPv6 Loop #}
-    {% for ip in interface.ip_addresses.all() %}
-      {% if ip.address.version == 6 %}
+    {% endif %}
+  {% endfor %}
+  {# IPv6 Loop #}
+  {% for ip in interface.ip_addresses.all() %}
+    {% if ip.address.version == 6 %}
 
   ipv6 address {{ ip.address }}
-      {% endif %}
-    {% endfor %}
-  {% endif %}
-
+    {% endif %}
+  {% endfor %}
+  
   {% if interface.cf.ospf_enabled == true %}
   ip ospf {{ ospf_process_id }} area {{ ospf_area_id }}
   ip ospf network {{ ospf_network_type }}

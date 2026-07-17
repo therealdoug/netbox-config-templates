@@ -34,3 +34,12 @@ ip bgp-community new-format
 
 !# Set NTP Server
 {% include 'common/ntp.cisco.j2' %}
+
+!# Enable IPv6 Routing if device has IPv6 addresses
+{% if device.ipv6_addresses | length > 0 %}
+!# Enable IPv6 Routing
+ipv6 unicast-routing
+{% endif %}
+
+!# Set syslog server
+{% include 'common/cisco/syslog.cisco.j2' %}
