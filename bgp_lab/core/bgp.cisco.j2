@@ -1,0 +1,11 @@
+! --- BGP Configuration ---
+{# https://github.com/anton-sap/otus-dc-network-design/blob/84065f18c17c85995e659095dfe96f950f2eb6d2/HW-4%20-%20BGP%20Underlay/files/netbox_bgp_template.jinja2 #}
+{%- for local_asn, sessions in device.bgpsession_set.all() | groupby('local_as.asn') %}
+router bgp {{ local_asn }}
+   maximum-paths 2
+  {%- for session in sessions %}
+   neighbor {{ session.remote_address.address.ip }} remote-as {{ session.remote_as.asn }}
+   neighbor {{ session.remote_address.address.ip }} bfd
+  {%- endfor %}
+   redistribute connected
+{%- endfor %}
