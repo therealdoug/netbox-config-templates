@@ -1,4 +1,4 @@
-{% for interface in device.interfaces.all() %}
+{% for interface in device.interfaces.filter(mgmt_only=false) %}
 interface {{ interface.name }}
   {# 1. Set Description #}
   {% if interface.description %}
