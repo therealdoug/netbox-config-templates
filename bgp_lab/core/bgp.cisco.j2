@@ -1,11 +1,43 @@
-! --- BGP Configuration ---
-{# https://github.com/anton-sap/otus-dc-network-design/blob/84065f18c17c85995e659095dfe96f950f2eb6d2/HW-4%20-%20BGP%20Underlay/files/netbox_bgp_template.jinja2 #}
-{%- for local_asn, sessions in device.bgpsession_set.all() | groupby('local_as.asn') %}
-router bgp {{ local_asn }}
-   maximum-paths 2
-  {%- for session in sessions %}
-   neighbor {{ session.remote_address.address.ip }} remote-as {{ session.remote_as.asn }}
-   neighbor {{ session.remote_address.address.ip }} bfd
-  {%- endfor %}
-   redistribute connected
-{%- endfor %}
+{# Get the active local BGP session(s) mapped to this device #}
+{% set bgp_sessions = device.bgp_sessions.all() %}
+
+{# Only generate BGP configuration if the device has assigned sessions #}
+{% if bgp_sessions %}
+{# Assuming the local ASN is consistent across sessions on this device; grabbing from the first session #}
+router bgp {{ bgp_sessions[0].local_as.asn }}
+  bgp log-neighbor-changes
+  
+  {# Step 1: Configure Peer Groups to avoid repeating configuration statements #}
+  {% set configured_groups = [] %}
+  {% for session in bgp_sessions %}
+    {% if session.peer_group and session.peer_group.name not in configured_groups %}
+  neighbor {{ session.peer_group.name }} peer-group
+  neighbor {{ session.peer_group.name }} remote-as {{ session.peer_group.remote_as.asn if session.peer_group.remote_as else 'alternate' }}
+      {% if session.peer_group.description %}
+  neighbor {{ session.peer_group.name }} description {{ session.peer_group.description }}
+      {% endif %}
+      {# Track configured group to avoid duplicate rendering statements #}
+      {% if configured_groups.append(session.peer_group.name) %}{% endif %}
+    {% endif %}
+  {% endfor %}
+
+  {# Step 2: Configure Individual BGP Neighbors #}
+  {% for session in bgp_sessions %}
+    {# Use the clean IP string without the CIDR mask suffix (e.g., 192.168.1.1 instead of 192.168.1.1/24) #}
+    {% set peer_ip = session.remote_address.address.ip %}
+  neighbor {{ peer_ip }} remote-as {{ session.remote_as.asn }}
+    {% if session.description %}
+  neighbor {{ peer_ip }} description {{ session.description }}
+    {% endif %}
+    {% if session.peer_group %}
+  neighbor {{ peer_ip }} peer-group {{ session.peer_group.name }}
+    {% endif %}
+    {# Example for authentication strings stored in NetBox custom fields if applicable #}
+    {% if session.cf.bgp_password %}
+  neighbor {{ peer_ip }} password {{ session.cf.bgp_password }}
+    {% endif %}
+  neighbor {{ peer_ip }} activate
+  
+  {% endfor %}
+!
+{% endif %}
