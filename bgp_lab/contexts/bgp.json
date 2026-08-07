@@ -1,4 +1,4 @@
 {
     "bgp_update_source": "Loopback10",
-    "send_community": "both"
+    "bgp_send_community": "both"
 }
